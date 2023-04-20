@@ -26,7 +26,7 @@ class PasswordInPlayRule(AnsibleLintRule):
         "Passwords defined in a play must use a variable."
     )
     severity = "HIGH"
-    tags = ["security", "experimental"]
+    tags = ["opt-in", "security", "experimental"]
     version_added = "v4.0.0"
 
     VARIABLE_REGEXP = re.compile("^\\{\\{.+\\}\\}$")
