@@ -6,16 +6,12 @@ import sys
 from typing import TYPE_CHECKING
 
 from ansiblelint.rules import AnsibleLintRule
-from ansiblelint.testing import RunFromText
 
 # Copyright (c) 2018, Ansible Project
 
 
 if TYPE_CHECKING:
     from typing import Any
-
-    from ansiblelint.errors import MatchError
-    from ansiblelint.file_utils import Lintable
 
 
 class PasswordInCommandRule(AnsibleLintRule):
@@ -31,10 +27,16 @@ class PasswordInCommandRule(AnsibleLintRule):
     version_added = "v4.0.0"
 
     PASSWORD_REGEXP = re.compile("\\b(password|pwd|pass)\\b")
-    TASK_FILTER = ["shell", "command", "ansible.builtin.shell", "ansible.builtin.command"]
+    TASK_FILTER = [
+        "shell",
+        "command",
+        "ansible.builtin.shell",
+        "ansible.builtin.command",
+    ]
 
     def has_password(self, cmdline: str) -> bool:
-        return not self.PASSWORD_REGEXP.search(cmdline) is None
+        """Returns true if the cmdline string potentially contains a password"""
+        return self.PASSWORD_REGEXP.search(cmdline) is not None
 
     def matchtask(self, task: dict[str, Any], file: Any | None = None) -> bool | str:
         if task["action"]["__ansible_module__"] in self.TASK_FILTER:
@@ -46,10 +48,11 @@ class PasswordInCommandRule(AnsibleLintRule):
             elif "_raw_params" in task["action"]:
                 cmdline = task["action"]["_raw_params"]
 
-            if not cmdline is None and self.has_password(cmdline):
-                if not "no_log" in task["action"] or not task["action"]["no_log"]:
+            if cmdline is not None and self.has_password(cmdline):
+                if "no_log" not in task["action"] or not task["action"]["no_log"]:
                     return True
         return False
+
 
 # testing code to be loaded only with pytest or when executed the rule file
 if "pytest" in sys.modules:  # noqa: C901

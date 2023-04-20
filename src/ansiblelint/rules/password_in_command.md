@@ -17,11 +17,11 @@ to prevent the task details from being logged.
   tasks:
     - name: Run arbitrary command with passwords
       ansible.builtin.command:
-        cmd: /usr/bin/runprocess.sh -user db_user -pass {{ my_secret }}
+        cmd: /usr/bin/run-process.sh -user db_user -pass {{ my_secret }}
         creates: /path/to/output
         no_log: false
     - name: Run arbitrary command with passwords
-      ansible.builtin.command: /usr/bin/runprocess.sh db_user {{ password }}
+      ansible.builtin.command: /usr/bin/run-process.sh db_user {{ password }}
       args:
         creates: /path/to/output
 ```
@@ -36,11 +36,11 @@ to prevent the task details from being logged.
   tasks:
     - name: Run arbitrary command with passwords
       ansible.builtin.command:
-        cmd: /usr/bin/runprocess.sh -user db_user -pass {{ my_secret }}
+        cmd: /usr/bin/run-process.sh -user db_user -pass {{ my_secret }}
         creates: /path/to/output
         no_log: true
     - name: Run arbitrary command with passwords
-      ansible.builtin.command: /usr/bin/runprocess.sh db_user {{ password }}
+      ansible.builtin.command: /usr/bin/run-process.sh db_user {{ password }}
       args:
         creates: /path/to/output
         no_log: true
