@@ -6,7 +6,6 @@ import sys
 from typing import TYPE_CHECKING
 
 from ansiblelint.rules import AnsibleLintRule
-from ansiblelint.testing import RunFromText
 
 # Copyright (c) 2018, Ansible Project
 
@@ -14,17 +13,12 @@ from ansiblelint.testing import RunFromText
 if TYPE_CHECKING:
     from typing import Any
 
-    from ansiblelint.errors import MatchError
-    from ansiblelint.file_utils import Lintable
-
 
 class PasswordInPlayRule(AnsibleLintRule):
     """Password defined in a play must use a variable."""
 
     id = "password-in-play"
-    description = (
-        "Passwords defined in a play must use a variable."
-    )
+    description = "Passwords defined in a play must use a variable."
     severity = "HIGH"
     tags = ["opt-in", "security", "experimental"]
     version_added = "v4.0.0"
@@ -33,7 +27,8 @@ class PasswordInPlayRule(AnsibleLintRule):
     POTENTIAL_FIELDS = ["password", "proxy_password", "url_password"]
 
     def is_variable_password(self, value: str) -> bool:
-        return self.VARIABLE_REGEXP.match(value)
+        """Returns true if the value string is an Ansible variable"""
+        return self.VARIABLE_REGEXP.match(value) is not None
 
     def matchtask(self, task: dict[str, Any], file: Any | None = None) -> bool | str:
         for potential_field in self.POTENTIAL_FIELDS:
